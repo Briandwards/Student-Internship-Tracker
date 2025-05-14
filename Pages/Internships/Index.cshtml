@@ -1,0 +1,153 @@
+@page
+@using Student_Internship_Tracker.Models
+@model Student_Internship_Tracker.Pages_Internships.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Available Internships</h1>
+<p class="lead">Browse and manage internship opportunities</p>
+
+<div class="row mb-3">
+    <div class="col-md-8">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search..." asp-for="SearchString">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" asp-for="LocationFilter" onchange="this.form.submit()">
+                    <option value="">All Locations</option>
+                    @foreach (var location in Model.Internship.Select(i => i.Location).Distinct())
+                    {
+                        <option value="@location">@location</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" asp-for="ShowActiveOnly" onchange="this.form.submit()">
+                    <label class="form-check-label" for="ShowActiveOnly">Show Active Only</label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a asp-page="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Internship
+        </a>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort By
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item @(Model.SortField == "company" ? "active" : "")" 
+                    href="?SortField=company&SortDirection=@(Model.SortField == "company" && Model.SortDirection == "asc" ? "desc" : "asc")">Company Name</a></li>
+                <li><a class="dropdown-item @(Model.SortField == "position" ? "active" : "")" 
+                    href="?SortField=position&SortDirection=@(Model.SortField == "position" && Model.SortDirection == "asc" ? "desc" : "asc")">Position</a></li>
+                <li><a class="dropdown-item @(Model.SortField == "location" ? "active" : "")" 
+                    href="?SortField=location&SortDirection=@(Model.SortField == "location" && Model.SortDirection == "asc" ? "desc" : "asc")">Location</a></li>
+                <li><a class="dropdown-item @(Model.SortField == "deadline" ? "active" : "")" 
+                    href="?SortField=deadline&SortDirection=@(Model.SortField == "deadline" && Model.SortDirection == "asc" ? "desc" : "asc")">Deadline</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 g-4 mb-3">
+    @foreach (var item in Model.Internship) {
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-img-top p-4" style="height: 160px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <div class="text-center">
+                            <img src="@item.ImageUrl" 
+                                 alt="@item.CompanyName logo" 
+                                 class="img-fluid" 
+                                 style="max-height: 120px; object-fit: contain;"
+                                 onerror="this.onerror=null; this.src='/images/companies/default.png';" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <i class="bi bi-building display-1 text-primary opacity-75"></i>
+                            <h4 class="mt-2 mb-0 text-primary">@item.CompanyName</h4>
+                        </div>
+                    }
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.PositionTitle</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@item.CompanyName</h6>
+                    <p class="card-text">
+                        <i class="bi bi-geo-alt"></i> @(string.IsNullOrEmpty(item.Location) ? "Location not specified" : item.Location)<br>
+                        <i class="bi bi-calendar"></i> Deadline: @item.ApplicationDeadline.ToShortDateString()
+                    </p>
+                    
+                    @if (item.Applications != null && item.Applications.Any())
+                    {
+                        <div class="mb-3">
+                            <small class="text-muted">Applications (@item.Applications.Count):</small>
+                            <div class="mt-2">
+                                @foreach (var app in item.Applications)
+                                {
+                                    var statusClass = app.Status switch
+                                    {
+                                        ApplicationStatus.Applied => "badge bg-primary",
+                                        ApplicationStatus.Interviewing => "badge bg-warning text-dark",
+                                        ApplicationStatus.Offer => "badge bg-success",
+                                        ApplicationStatus.Rejected => "badge bg-danger",
+                                        _ => "badge bg-secondary"
+                                    };
+                                    <div class="mb-1">
+                                        <span class="@statusClass">@app.Status</span>
+                                        @(app.Student != null ? $"{app.Student.FirstName} {app.Student.LastName}" : "Unknown Student")
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="btn-group" role="group">
+                        <a asp-page="./Edit" asp-route-id="@item.InternshipId" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-page="./Details" asp-route-id="@item.InternshipId" class="btn btn-sm btn-outline-info">Details</a>
+                        <a asp-page="/Applications/Create" asp-route-internshipId="@item.InternshipId" class="btn btn-sm btn-outline-success">Apply</a>
+                        <a asp-page="./Delete" asp-route-id="@item.InternshipId" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-currentFilter="@Model.CurrentFilter" asp-route-sortField="@Model.SortField" asp-route-sortDirection="@Model.SortDirection">Previous</a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-currentFilter="@Model.CurrentFilter" asp-route-sortField="@Model.SortField" asp-route-sortDirection="@Model.SortDirection">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-currentFilter="@Model.CurrentFilter" asp-route-sortField="@Model.SortField" asp-route-sortDirection="@Model.SortDirection">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

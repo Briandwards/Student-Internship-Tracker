@@ -1,0 +1,117 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Welcome to InternTrack";
+}
+
+<div class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">Track Your Path to Success</h1>
+            <p class="lead mb-4">InternTrack helps you manage your internship applications, track their status, and stay organized throughout your job search journey.</p>
+            <div class="d-grid gap-3 d-sm-flex">
+                <a asp-page="/Internships/Index" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-search me-2"></i> Browse Internships
+                </a>
+                <a asp-page="/Applications/Index" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="bi bi-file-text me-2"></i> View Applications
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6 mt-5 mt-lg-0">
+            <div class="row g-4">
+                <div class="col-sm-6">
+                    <div class="p-4 bg-light rounded-3 shadow-sm text-center h-100">
+                        <i class="bi bi-search display-4 text-primary mb-3"></i>
+                        <h3 class="h5 mb-2">Find Opportunities</h3>
+                        <p class="text-muted small mb-0">Search through curated internship listings</p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-4 bg-light rounded-3 shadow-sm text-center h-100">
+                        <i class="bi bi-file-earmark-check display-4 text-success mb-3"></i>
+                        <h3 class="h5 mb-2">Easy Apply</h3>
+                        <p class="text-muted small mb-0">Submit applications with just a few clicks</p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-4 bg-light rounded-3 shadow-sm text-center h-100">
+                        <i class="bi bi-graph-up display-4 text-info mb-3"></i>
+                        <h3 class="h5 mb-2">Track Progress</h3>
+                        <p class="text-muted small mb-0">Monitor your application status</p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-4 bg-light rounded-3 shadow-sm text-center h-100">
+                        <i class="bi bi-bell display-4 text-warning mb-3"></i>
+                        <h3 class="h5 mb-2">Stay Updated</h3>
+                        <p class="text-muted small mb-0">Get notified about deadlines</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded p-3 me-3">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h3 class="h5 mb-0">Students</h3>
+                    </div>
+                    <p class="card-text text-muted mb-4">Create your profile and showcase your skills to potential employers.</p>
+                    <a asp-page="/Students/Index" class="btn btn-outline-primary">
+                        <i class="bi bi-person me-2"></i>View Students
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded p-3 me-3">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <h3 class="h5 mb-0">Internships</h3>
+                    </div>
+                    <p class="card-text text-muted mb-4">Discover exciting internship opportunities from top companies.</p>
+                    <a asp-page="/Internships/Index" class="btn btn-outline-primary">
+                        <i class="bi bi-search me-2"></i>Browse Listings
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded p-3 me-3">
+                            <i class="bi bi-file-text"></i>
+                        </div>
+                        <h3 class="h5 mb-0">Applications</h3>
+                    </div>
+                    <p class="card-text text-muted mb-4">Track your applications and stay updated on their status.</p>
+                    <a asp-page="/Applications/Index" class="btn btn-outline-primary">
+                        <i class="bi bi-clipboard-check me-2"></i>View Status
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="p-5 bg-light rounded-3">
+                <h2 class="display-6 fw-bold mb-4">Ready to Start?</h2>
+                <p class="lead text-muted mb-4">Join thousands of students who have found their dream internships through InternTrack.</p>
+                <a asp-page="/Students/Create" class="btn btn-lg btn-primary px-5">
+                    <i class="bi bi-person-plus me-2"></i>Create Your Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

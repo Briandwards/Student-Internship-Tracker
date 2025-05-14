@@ -1,0 +1,95 @@
+@page
+@using Student_Internship_Tracker.Models
+@model Student_Internship_Tracker.Pages_Applications.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Internship Applications</h1>
+<p class="lead">Track all internship applications and their current status</p>
+
+<div class="row mb-3">
+    <div class="col-md-8">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search..." asp-for="SearchString">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" asp-for="StatusFilter" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    @foreach (var status in Model.AllStatuses)
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a asp-page="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Application
+        </a>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Student</th>
+                <th>Position</th>
+                <th>Company</th>
+                <th>Application Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Application) {
+            <tr>
+                <td>
+                    <strong>@(item.Student != null ? $"{item.Student.FirstName} {item.Student.LastName}" : "Unknown Student")</strong><br />
+                    <small class="text-muted">@(item.Student?.Major ?? "N/A")</small>
+                </td>
+                <td>
+                    @(item.Internship?.PositionTitle ?? "N/A")
+                </td>
+                <td>
+                    <strong>@(item.Internship != null ? item.Internship.CompanyName : "N/A")</strong><br />
+                    <small class="text-muted">@(item.Internship != null ? item.Internship.Location : "N/A")</small>
+                </td>
+                <td>
+                    @item.ApplicationDate.ToShortDateString()
+                </td>
+                <td>
+                    @{
+                        var (statusClass, statusIcon) = item.Status switch
+                        {
+                            ApplicationStatus.Applied => ("badge bg-primary", "bi bi-send"),
+                            ApplicationStatus.Interviewing => ("badge bg-warning text-dark", "bi bi-calendar-event"),
+                            ApplicationStatus.Offer => ("badge bg-success", "bi bi-check-circle"),
+                            ApplicationStatus.Rejected => ("badge bg-danger", "bi bi-x-circle"),
+                            _ => ("badge bg-secondary", "bi bi-question-circle")
+                        };
+                    }
+                    <span class="@statusClass">
+                        <i class="@statusIcon me-1"></i>@(item.Status.ToString())
+                    </span>
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-page="./Edit" asp-route-id="@item.ApplicationId" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-page="./Details" asp-route-id="@item.ApplicationId" class="btn btn-sm btn-outline-info">Details</a>
+                        <a asp-page="./Delete" asp-route-id="@item.ApplicationId" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+}
+    </tbody>
+</table>

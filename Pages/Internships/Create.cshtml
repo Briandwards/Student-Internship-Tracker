@@ -1,0 +1,52 @@
+@page
+@model Student_Internship_Tracker.Pages_Internships.CreateModel
+
+        @{
+        ViewData["Title"] = "Create";
+        }
+        
+        <h1>Create</h1>
+        
+    <h4>Internship</h4>
+    <hr />
+    <div class="row">
+    <div class="col-md-4">
+    <form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Internship.CompanyName" class="control-label"></label>
+                <input asp-for="Internship.CompanyName" class="form-control" />
+                <span asp-validation-for="Internship.CompanyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Internship.PositionTitle" class="control-label"></label>
+                <input asp-for="Internship.PositionTitle" class="form-control" />
+                <span asp-validation-for="Internship.PositionTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Internship.Location" class="control-label"></label>
+                <input asp-for="Internship.Location" class="form-control" />
+                <span asp-validation-for="Internship.Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Internship.ApplicationDeadline" class="control-label"></label>
+                <input asp-for="Internship.ApplicationDeadline" class="form-control" />
+                <span asp-validation-for="Internship.ApplicationDeadline" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
