@@ -27,7 +27,6 @@ namespace Student_Internship_Tracker.Pages_Internships
         [BindProperty]
         public Internship Internship { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

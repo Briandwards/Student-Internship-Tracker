@@ -31,7 +31,6 @@ namespace Student_Internship_Tracker.Pages_Applications
         [BindProperty]
         public Application Application { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -42,7 +41,6 @@ namespace Student_Internship_Tracker.Pages_Applications
                 return Page();
             }
 
-            // Check for duplicate applications
             var existingApplication = await _context.Applications
                 .FirstOrDefaultAsync(a => a.StudentId == Application.StudentId && 
                                          a.InternshipId == Application.InternshipId);

@@ -45,7 +45,7 @@ namespace Student_Internship_Tracker.Pages_Internships
         public string? SortDirection { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public int PageSize { get; set; } = 6; // Number of items per page
+        public int PageSize { get; set; } = 6; 
 
         [BindProperty(SupportsGet = true)]
         public int PageIndex { get; set; } = 1;

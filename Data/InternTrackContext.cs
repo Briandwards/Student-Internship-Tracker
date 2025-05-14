@@ -24,7 +24,6 @@ public class InternTrackContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configure the many-to-many relationship
         modelBuilder.Entity<Application>()
             .HasOne(a => a.Student)
             .WithMany(s => s.Applications)
