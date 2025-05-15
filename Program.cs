@@ -1,58 +1,31 @@
 using Microsoft.EntityFrameworkCore;
+using Student_Internship_Tracker.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Student_Internship_Tracker.Data;
-using Student_Internship_Tracker.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 builder.Services.AddRazorPages();
-
+// Bring in database context with dependency injection.
 builder.Services.AddDbContext<InternTrackContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("InternTrackContext") ?? 
-                     "Data Source=InternTrack.db"));
-
-builder.Logging.AddConsole();
+    options.UseSqlite(builder.Configuration.GetConnectionString("InternTrackConnection") ?? 
+    "Data Source=InternTrack.db"));
 
 var app = builder.Build();
 
+// Seed Data
+using (var scope = app.Services.CreateScope())
+{
+    SeedData.Initialize(scope.ServiceProvider);
+}
+
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-}
-else
-{
-    app.UseDeveloperExceptionPage();
-}
-
-app.UseStaticFiles(new StaticFileOptions
-{
-    OnPrepareResponse = ctx =>
-    {
-        if (app.Environment.IsDevelopment())
-        {
-            var path = ctx.Context.Request.Path;
-            app.Logger.LogInformation($"Static file requested: {path}");
-            ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store";
-        }
-    }
-});
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<InternTrackContext>();
-        context.Database.EnsureCreated(); 
-        SeedData.Initialize(services);
-        app.Logger.LogInformation("Database initialized successfully.");
-    }
-    catch (Exception ex)
-    {
-        app.Logger.LogError(ex, "An error occurred while initializing the database.");
-        throw; 
-    }
 }
 
 app.UseHttpsRedirection();
