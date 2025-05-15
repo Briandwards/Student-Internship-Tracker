@@ -23,9 +23,9 @@
             <div class="col-md-4">
                 <select class="form-select" asp-for="LocationFilter" onchange="this.form.submit()">
                     <option value="">All Locations</option>
-                    @foreach (var location in Model.Internship.Select(i => i.Location).Distinct())
+                    @foreach (var location in Model.AllLocations)
                     {
-                        <option value="@location">@location</option>
+                        <option value="@location" selected="@(location == Model.LocationFilter)">@location</option>
                     }
                 </select>
             </div>

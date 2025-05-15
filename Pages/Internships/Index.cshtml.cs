@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +8,9 @@ namespace Student_Internship_Tracker.Pages_Internships
 {
     public class IndexModel : PageModel
     {
-        private readonly Student_Internship_Tracker.Data.InternTrackContext _context;
+        private readonly InternTrackContext _context;
 
-        public IndexModel(Student_Internship_Tracker.Data.InternTrackContext context)
+        public IndexModel(InternTrackContext context)
         {
             _context = context;
         }
@@ -45,7 +41,7 @@ namespace Student_Internship_Tracker.Pages_Internships
         public string? SortDirection { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public int PageSize { get; set; } = 6; 
+        public int PageSize { get; set; } = 6; // Number of items per page
 
         [BindProperty(SupportsGet = true)]
         public int PageIndex { get; set; } = 1;
@@ -54,17 +50,38 @@ namespace Student_Internship_Tracker.Pages_Internships
 
         public async Task OnGetAsync()
         {
+            // Get all unique locations for the filter dropdown
+            AllLocations = await _context.Internships
+                .Select(i => i.Location ?? string.Empty)
+                .Where(l => !string.IsNullOrEmpty(l))
+                .Distinct()
+                .ToListAsync();
+
             var internships = _context.Internships
                 .Include(i => i.Applications)
                     .ThenInclude(a => a.Student)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(CurrentFilter))
+            // Apply search filter
+            if (!string.IsNullOrEmpty(SearchString))
             {
                 internships = internships.Where(s => 
-                    (!string.IsNullOrEmpty(s.CompanyName) && s.CompanyName.Contains(CurrentFilter)) ||
-                    (!string.IsNullOrEmpty(s.PositionTitle) && s.PositionTitle.Contains(CurrentFilter)) ||
-                    (!string.IsNullOrEmpty(s.Location) && s.Location.Contains(CurrentFilter)));
+                    (s.CompanyName != null && s.CompanyName.Contains(SearchString)) ||
+                    (s.PositionTitle != null && s.PositionTitle.Contains(SearchString)) ||
+                    (s.Location != null && s.Location.Contains(SearchString)));
+            }
+
+            // Apply location filter
+            if (!string.IsNullOrEmpty(LocationFilter))
+            {
+                internships = internships.Where(i => i.Location == LocationFilter);
+            }
+
+            // Apply active only filter
+            if (ShowActiveOnly)
+            {
+                var today = DateTime.Today;
+                internships = internships.Where(i => i.ApplicationDeadline >= today);
             }
 
             internships = SortField?.ToLower() switch

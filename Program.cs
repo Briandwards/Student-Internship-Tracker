@@ -3,6 +3,7 @@ using Student_Internship_Tracker.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Student_Internship_Tracker.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
